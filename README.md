@@ -1,4 +1,6 @@
-# bibliografia_sito
+# Bibliografia sito SCIA
 
-[Documentazioen SCIA](https://scia-ispra.github.io/bibliografia_sito/)
+[Documentazione SCIA](https://scia-ispra.github.io/bibliografia_sito/)
+
+
 
