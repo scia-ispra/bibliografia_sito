@@ -10,6 +10,7 @@ library("crosstalk")
 library("govdown")
 library("htmltools")
 library("tidyverse")
+library("renv")
 
 knitr::opts_chunk$set(include = F,echo=F,message = F,error = F,warning = F)
 
