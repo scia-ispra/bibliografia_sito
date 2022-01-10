@@ -1,0 +1,71 @@
+---
+title: Rapporti ISPRA
+output: html_document
+---
+
+```{r intro,include = F,echo=F,message = F,error = F,warning = F}
+library("reactable")
+library("reactablefmtr")
+library("crosstalk")
+library("govdown")
+library("htmltools")
+library("tidyverse")
+
+knitr::opts_chunk$set(include = F,echo=F,message = F,error = F,warning = F)
+
+read_delim("rapporti.csv",delim=";",col_names = TRUE)->dati
+```
+
+
+```{r tabella,include=TRUE}
+
+
+crosstalk::SharedData$new(dati %>% dplyr::select(Copertina,everything()))->ct_data
+
+document_select<-crosstalk::filter_select(id="select_tipo",label = "Tipo documento",sharedData = ct_data,group =~Tipologia )
+
+
+reactable(ct_data,
+          searchable = TRUE,
+          highlight = FALSE,
+          borderless = TRUE,
+          defaultPageSize = 10,
+          defaultColDef = colDef(vAlign = "top",align = "left",headerStyle = list(fontWeight="900",fontSize="14px")),
+          showSortIcon = FALSE,
+          compact = FALSE,
+          defaultSortOrder = "desc",
+          defaultSorted = "Anno",
+          language = reactableLang(searchPlaceholder = "Ricerca testo..."),
+          columns=list(
+            Titolo=colDef(minWidth = 150,
+                          align="left",
+                          cell=function(titolo,index){
+                            
+                            tags$a(titolo,href=dati$Link[[index]],target="_blank")
+                            
+                          }),
+            Anno=colDef(width=100,style=list(fontWeight="900")),
+            Autori=colDef(maxWidth = 240,minWidth = 160),
+            Link=colDef(show = FALSE),
+            Sintesi=colDef(show=TRUE,minWidth = 200,align="left"),
+            Tipologia=colDef(show = FALSE),
+            Copertina=colDef(cell = function(nome){
+              
+              image<-img(src=nome,height="180px",alt="Copertina rapporto",style="border: 3px solid #321;")
+              tagList(
+                div(style = list(display = "inline-block", height = "220px"), image)
+              )
+              
+            }, 
+            style=list(background="white"),
+            name = "",
+            minWidth = 125)
+
+))->tabella
+
+div(bscols(document_select,widths = c(4)))
+
+
+
+div(tabella,class="tabella")
+```
